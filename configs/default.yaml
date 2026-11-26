@@ -1,0 +1,40 @@
+seed: 42
+seeds: [42, 43, 44, 45, 46]        # dùng cho benchmark (mean ± std)
+
+paths:
+  raw: data/raw/PROVEDIt           # TODO: đặt dữ liệu PROVEDIt (CSV/EPG, genotype, naming convention) vào đây
+  interim: data/interim
+  processed: data/processed
+  splits: data/splits
+  outputs: outputs
+
+data:
+  kit: GlobalFiler                 # TODO: xác nhận tên kit/cycle theo naming convention
+  pcr_cycles: 29                   # TODO: xác nhận
+  analytical_threshold: 50         # RFU, TODO: chốt và ghi rõ trong báo cáo
+  drop_locus: [AMEL]               # TODO: kiểm tra tên locus theo kit (loại amelogenin, Y-STR...)
+  noc_classes: [1, 2, 3, 4, 5]     # TODO: gộp thành [1,2,3,4] (4+) nếu lớp 5 quá ít
+  merge_5_into_4: false
+  rfu_norm: log1p                  # log1p | total | none
+
+split:
+  group_by: genotype_set           # TODO: xác định cột nhóm (bộ người đóng góp / thí nghiệm)
+  train: 0.70
+  val: 0.15
+  test: 0.15
+  n_folds: 5
+
+train:
+  batch_size: 64
+  epochs: 100
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  early_stopping_patience: 10
+  class_weights: true
+  device: auto
+
+models:                            # TODO: điều chỉnh siêu tham số
+  mlp:    {hidden: [256, 128], dropout: 0.3}
+  cnn1d:  {channels: [32, 64, 128], kernel: 3, dropout: 0.3}
+  rnn:    {cell: gru, hidden: 128, layers: 2, bidirectional: true, dropout: 0.3}
+  hybrid: {}
